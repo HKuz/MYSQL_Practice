@@ -1,2 +1,3 @@
-# MYSQL_Practice
-Practice problems using MYSQL
+# MYSQL Practice
+
+Practice problems using MYSQL from the [Code Fights Databases Arcade](https://codefights.com/arcade/db/).
