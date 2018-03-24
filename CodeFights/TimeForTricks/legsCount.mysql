@@ -1,0 +1,5 @@
+DROP PROCEDURE IF EXISTS legsCount;
+CREATE PROCEDURE legsCount()
+    SELECT sum(CASE type WHEN 'human' THEN 2 ELSE 4 END) as summary_legs
+    FROM creatures
+    ORDER BY id;
