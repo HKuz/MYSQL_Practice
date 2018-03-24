@@ -1,0 +1,7 @@
+CREATE PROCEDURE nullIntern()
+BEGIN
+    SELECT count(id) AS number_of_nulls
+    FROM departments
+    WHERE TRIM(LOWER(description)) IN ('null', 'nil', '-')
+    OR description IS NULL;
+END
