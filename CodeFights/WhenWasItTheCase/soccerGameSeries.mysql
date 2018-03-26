@@ -1,0 +1,13 @@
+CREATE PROCEDURE soccerGameSeries()
+BEGIN
+    select elt(
+               sign(
+                   ???(
+                       sign((@a:=first_team_score) - @?:=second_team_score) * 1e4 +
+                       (@a - @?) * 1e2 +
+                       (2 = @c:=??????????) * @a - (@c = 1) * @?
+                   )
+               ) + 2, 2, 0, ?
+           ) winner
+        from scores;
+END
