@@ -22,7 +22,7 @@ CREATE TABLE boxofc (
 );
 
 -- Load data from box_office_predictions.tsv
-LOAD DATA LOCAL INFILE './Datasets/box_office_predictions.tsv' INTO TABLE boxofc;
+LOAD DATA INFILE './Datasets/box_office_predictions.tsv' INTO TABLE boxofc;
 
 
 /*
