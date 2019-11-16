@@ -60,11 +60,19 @@ CREATE TABLE IF NOT EXISTS car_structures (
 SELECT * FROM car_structures
 WHERE maker = 'audi' AND model = '100';
 
+
 /*
 PUZZLE 5
+Create a query to select the most common car structures (door count and seat count combination) for each Audi model. How many doors and seats does the typical Audi A2 have? Do not store this output in a new table.
 
+Tip: There are many different ways to accomplish. We recommend taking advantage of the car_structures table from Puzzle 1.
 */
 
+SELECT maker, model, door_count, seat_count, SUM(listings) AS total_listings
+FROM car_structures
+WHERE maker = 'audi'
+GROUP BY model, door_count, seat_count
+ORDER BY total_listings DESC;
 
 
 /*
