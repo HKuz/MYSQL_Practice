@@ -1,0 +1,5 @@
+# Ignore datasets and Jupyter NB to process them
+EDS/Datasets/*
+
+# Jupyter Notebook
+.ipynb_checkpoints
