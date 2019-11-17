@@ -32,13 +32,21 @@ seat_count = nullif(@vseat_count, '');
 
 /*
 PUZZLE 4 - Data Cleaning
-By default, on import, the door_count and seat_count columns will have values of "None". In addition, some values have multiple formats, such as "4" and "4.0". This creates a situation where those columns are saved as type VARCHAR, and aggregations treat "4" and "4.0" as separate values.
+By default, on import, the door_count and seat_count columns will have values of
+"None". In addition, some values have multiple formats, such as "4" and "4.0".
+This creates a situation where those columns are saved as type VARCHAR, and
+aggregations treat "4" and "4.0" as separate values.
 
 - First, replace "None" values in those two columns with NULL
-- Then, fix the issue of separate formats for "4" and "4.0" and set those columns as type INTEGER
-- Next, create a new table car_structures that has the total number of listings for each maker, model, door count, and seat count combination. The goal of this table will to help us understand which car structures (door count and seat count) are most common for each car model.
+- Then, fix the issue of separate formats for "4" and "4.0" and set those columns
+as type INTEGER
+- Next, create a new table car_structures that has the total number of listings
+for each maker, model, door count, and seat count combination. The goal of this
+table will be to help us understand which car structures (door count and seat
+count) are most common for each car model.
 
-As a final check, select from car_structures for Audi 100's. Which structural combination is the most common?
+As a final check, select from car_structures for Audi 100's. Which structural
+combination is the most common?
 
 Data cleaning done in pandas, here are SQL commands:
 
@@ -63,9 +71,12 @@ WHERE maker = 'audi' AND model = '100';
 
 /*
 PUZZLE 5 - Self Joins and Modes
-Create a query to select the most common car structures (door count and seat count combination) for each Audi model. How many doors and seats does the typical Audi A2 have? Do not store this output in a new table.
+Create a query to select the most common car structures (door count and seat count
+combination) for each Audi model. How many doors and seats does the typical Audi
+A2 have? Do not store this output in a new table.
 
-Tip: There are many different ways to accomplish. We recommend taking advantage of the car_structures table from Puzzle 1.
+Tip: There are many different ways to accomplish. We recommend taking advantage
+of the car_structures table from Puzzle 1.
 */
 
 -- Get all listings by maker and model
@@ -95,22 +106,52 @@ ORDER BY c.model;
 PUZZLE 6 - Nested Queries and Putting It All Together
 For each maker and model combination, display:
 
-    The earliest manufacture year
-    The latest manufacture year
-    The most common number of doors (1 mode)
-    The most common number of seats (1 mode)
-    The average displacement, horsepower, and price.
-    Format these columns as you see fit for a clean output.
+- The earliest manufacture year
+- The latest manufacture year
+- The most common number of doors (1 mode)
+- The most common number of seats (1 mode)
+- The average displacement, horsepower, and price.
+- Format these columns as you see fit for a clean output.
+
+ROUND(AVG(column), #OfDecimals)
 
 When creating your query, do not store any new intermediary tables. In other words, pretend you do not have write access to the database.
 */
 
-SELECT maker, model, MIN(manufacture_year) AS earliest_man_yr,
-    MAX(manufacture_year) AS latest_man_yr,
-    -- most common doors
-    -- most common seats
-    AVG(displacement) AS avg_disp,
-    AVG(horsepower) AS avg_hp,
-    AVG(price) AS avg_price
-FROM carmkt
-GROUP BY maker, model
+SELECT
+    c.maker,
+    c.model,
+    MIN(c.manufacture_year) AS earliest_man_yr,
+    MAX(c.manufacture_year) AS latest_man_yr,
+    c.door_count,
+    c.seat_count,
+    ROUND(AVG(c.displacement), 2) AS avg_disp,
+    ROUND(AVG(c.horse_power)) AS avg_hp,
+    ROUND(AVG(c.price)) AS avg_price
+FROM carmkt c
+GROUP BY c.maker, c.model, c.door_count, c.seat_count
+HAVING COUNT(c.door_count) = (
+    SELECT COUNT(c2.door_count)
+    FROM carmkt c2
+    WHERE c2.maker = c.maker AND
+        c2.model = c.model
+    GROUP BY c2.maker, c2.model
+    ORDER BY COUNT(c2.door_count) DESC
+    LIMIT 1) AND
+    COUNT(c.seat_count) = (
+    SELECT COUNT(c3.seat_count)
+    FROM carmkt c3
+    WHERE c3.maker = c.maker AND
+        c3.model = c.model
+    GROUP BY c3.maker, c3.model
+    ORDER BY COUNT(c3.seat_count) DESC
+    LIMIT 1);
+
+-- Query for top door and seat combo by maker and model
+SELECT c.*
+FROM car_structures c
+LEFT JOIN car_structures c2
+    ON c.maker = c2.maker
+    AND c.model = c2.model
+    AND c.listings < c2.listings
+WHERE c2.listings IS NULL;
