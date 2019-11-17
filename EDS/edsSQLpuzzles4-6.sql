@@ -90,7 +90,7 @@ HAVING SUM(c.listings) =
      LIMIT 1)
 ORDER BY c.model;
 
---GROUP BY c.model, c.door_count, c.seat_count
+
 /*
 PUZZLE 6 - Nested Queries and Putting It All Together
 For each maker and model combination, display:
