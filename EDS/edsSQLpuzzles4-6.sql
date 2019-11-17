@@ -62,21 +62,55 @@ WHERE maker = 'audi' AND model = '100';
 
 
 /*
-PUZZLE 5
+PUZZLE 5 - Self Joins and Modes
 Create a query to select the most common car structures (door count and seat count combination) for each Audi model. How many doors and seats does the typical Audi A2 have? Do not store this output in a new table.
 
 Tip: There are many different ways to accomplish. We recommend taking advantage of the car_structures table from Puzzle 1.
 */
 
+-- Get all listings by maker and model
 SELECT maker, model, door_count, seat_count, SUM(listings) AS total_listings
 FROM car_structures
 WHERE maker = 'audi'
 GROUP BY model, door_count, seat_count
-ORDER BY total_listings DESC;
+ORDER BY model, total_listings DESC;
 
+-- Get only the top number of listings for each maker/model combo
+SELECT c.maker, c.model, c.door_count, c.seat_count, SUM(c.listings)
+FROM car_structures c
+WHERE c.maker = 'audi'
+GROUP BY c.model, c.door_count, c.seat_count
+HAVING SUM(c.listings) =
+    (SELECT SUM(c2.listings)
+     FROM car_structures c2
+     WHERE c2.maker = c.maker AND
+        c2.model = c.model
+     GROUP BY c2.model, c2.door_count, c2.seat_count
+     ORDER BY SUM(c2.listings) DESC
+     LIMIT 1)
+ORDER BY c.model;
 
+--GROUP BY c.model, c.door_count, c.seat_count
 /*
-PUZZLE 6
+PUZZLE 6 - Nested Queries and Putting It All Together
+For each maker and model combination, display:
 
+    The earliest manufacture year
+    The latest manufacture year
+    The most common number of doors (1 mode)
+    The most common number of seats (1 mode)
+    The average displacement, horsepower, and price.
+    Format these columns as you see fit for a clean output.
+
+When creating your query, do not store any new intermediary tables. In other words, pretend you do not have write access to the database.
 */
 
+SELECT maker, model, MIN(manufacture_year) AS earliest_man_yr,
+    MAX(manufacture_year) AS latest_man_yr,
+    -- most common doors
+    -- most common seats
+    AVG(displacement) AS avg_disp,
+    AVG(horsepower) AS avg_hp,
+    AVG(price) AS avg_price
+FROM carmkt
+GROUP BY maker, model
