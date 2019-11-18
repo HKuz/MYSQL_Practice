@@ -115,39 +115,11 @@ For each maker and model combination, display:
 
 ROUND(AVG(column), #OfDecimals)
 
-When creating your query, do not store any new intermediary tables. In other words, pretend you do not have write access to the database.
+When creating your query, do not store any new intermediary tables. In other words,
+pretend you do not have write access to the database.
 */
 
-SELECT
-    c.maker,
-    c.model,
-    MIN(c.manufacture_year) AS earliest_man_yr,
-    MAX(c.manufacture_year) AS latest_man_yr,
-    c.door_count,
-    c.seat_count,
-    ROUND(AVG(c.displacement), 2) AS avg_disp,
-    ROUND(AVG(c.horse_power)) AS avg_hp,
-    ROUND(AVG(c.price)) AS avg_price
-FROM carmkt c
-GROUP BY c.maker, c.model, c.door_count, c.seat_count
-HAVING COUNT(c.door_count) = (
-    SELECT COUNT(c2.door_count)
-    FROM carmkt c2
-    WHERE c2.maker = c.maker AND
-        c2.model = c.model
-    GROUP BY c2.maker, c2.model
-    ORDER BY COUNT(c2.door_count) DESC
-    LIMIT 1) AND
-    COUNT(c.seat_count) = (
-    SELECT COUNT(c3.seat_count)
-    FROM carmkt c3
-    WHERE c3.maker = c.maker AND
-        c3.model = c.model
-    GROUP BY c3.maker, c3.model
-    ORDER BY COUNT(c3.seat_count) DESC
-    LIMIT 1);
-
--- Query for top door and seat combo by maker and model
+-- Test query for top door and seat combo by maker and model
 SELECT c.*
 FROM car_structures c
 LEFT JOIN car_structures c2
@@ -155,3 +127,35 @@ LEFT JOIN car_structures c2
     AND c.model = c2.model
     AND c.listings < c2.listings
 WHERE c2.listings IS NULL;
+
+-- Full query
+SELECT
+    stats.*,
+    tops.door_count,
+    tops.seat_count
+FROM (
+    SELECT
+        c.maker,
+        c.model,
+        MIN(c.manufacture_year) AS earliest_man_yr,
+        MAX(c.manufacture_year) AS latest_man_yr,
+        ROUND(AVG(c.displacement), 2) AS avg_disp,
+        ROUND(AVG(c.horse_power)) AS avg_hp,
+        CONCAT("$", FORMAT(AVG(c.price), 0)) AS avg_price
+    FROM carmkt c
+    WHERE c.door_count IS NOT NULL AND
+        c.seat_count IS NOT NULL
+    GROUP BY c.maker, c.model
+) stats
+LEFT JOIN (
+    SELECT s.*
+    FROM car_structures s
+    LEFT JOIN car_structures s2
+        ON s.maker = s2.maker
+        AND s.model = s2.model
+        AND s.listings < s2.listings
+    WHERE s2.listings IS NULL) tops
+ON stats.maker = tops.maker
+    AND stats.model = tops.model
+ORDER BY stats.maker, stats.model;
+
