@@ -5,7 +5,7 @@ Puzzles 7-9 use the foot-moneyball datasets
 Tables: [ ]
 */
 
--- Create the table from foot-moneyball.csv and quarterbacks.csv
+-- Create the table for foot-moneyball.csv
 CREATE TABLE foot_moneyball (
     season int unsigned,
     `date` date,
@@ -22,18 +22,31 @@ CREATE TABLE foot_moneyball (
     sacks int unsigned,
     sacks_yards_lost int unsigned,
     passing_touchdowns int unsigned,
-    passing_yards int unsigned,
+    passing_yards int signed,
     rushing_attempts int unsigned,
     rushing_touchdowns int unsigned,
-    rushing_yards int unsigned
+    rushing_yards int signed
 );
 
+-- Load data from foot-moneyball.csv
+LOAD DATA INFILE '/Users/heatherkusmierz/MySQLData/foot-moneyball.csv'
+INTO TABLE foot_moneyball
+FIELDS TERMINATED BY ",";
+
+-- Create the table for quarterbacks.csv
 CREATE TABLE quarterbacks (
     name varchar(20),
     draft_round float,
     college varchar(20)
 );
 
+-- Load data from quarterbacks.csv
+LOAD DATA INFILE '/Users/heatherkusmierz/MySQLData/quarterbacks.csv'
+INTO TABLE quarterbacks
+FIELDS TERMINATED BY ","
+(name, @vdraft_round, college)
+SET
+draft_round = nullif(@vdraft_round, '');
 
 
 /*
