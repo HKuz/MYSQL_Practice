@@ -28,6 +28,12 @@ CREATE TABLE foot_moneyball (
     rushing_yards int unsigned
 );
 
+CREATE TABLE quarterbacks (
+    name varchar(20),
+    draft_round float,
+    college varchar(20)
+);
+
 
 
 /*
