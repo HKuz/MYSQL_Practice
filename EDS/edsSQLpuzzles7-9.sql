@@ -8,7 +8,7 @@ Tables: [ ]
 -- Create the table from foot-moneyball.csv and quarterbacks.csv
 CREATE TABLE foot_moneyball (
     season int unsigned,
-    "date" date,
+    `date` date,
     name varchar(20),
     team char(3),
     team_score int unsigned,
@@ -27,6 +27,7 @@ CREATE TABLE foot_moneyball (
     rushing_touchdowns int unsigned,
     rushing_yards int unsigned
 );
+
 
 
 /*
