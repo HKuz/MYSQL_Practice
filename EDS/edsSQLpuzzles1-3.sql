@@ -27,6 +27,9 @@ LOAD DATA INFILE './Datasets/box_office_predictions.tsv' INTO TABLE boxofc;
 
 /*
 PUZZLE 1
+We are interested in some basic statistics for movies released in the US only,
+segmented by genre.
+
 For each genre, display:
 
 - Total number of movies released
