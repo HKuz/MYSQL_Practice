@@ -59,7 +59,7 @@ Produce the same table from Puzzle #1, with the following changes:
 - Round average runtime to the nearest integer
 - Round average score to two decimal places
 - Round percent of movies with 100K votes to the nearest percentage point
-- Add the gross sales value from the movie with the highest gross sales.
+- Add the gross sales value from the movie with the highest gross sales
 - Display budget and gross sales in currency format (USD) rounded to the nearest
   whole dollar.
 
