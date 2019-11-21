@@ -63,7 +63,8 @@ Tip: Remember to account for the possibility of multiple quarterbacks on a team 
 */
 
 SELECT
-    t_home.*, o_away.avg_team_score
+    t_home.*,
+    o_away.avg_team_score
 FROM (
     SELECT
         team, AVG(opponent_score) AS avg_op_score
