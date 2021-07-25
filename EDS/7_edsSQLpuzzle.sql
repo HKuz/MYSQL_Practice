@@ -6,9 +6,9 @@ PUZZLE 7
 Write a query that:
 
 - Calculates the average score allowed by a "team" to "opponents" in 2012, in
-their home stadium (i.e. location = 'H')
+their home stadium (location = 'H')
 - Calculates the average score allowed by an "opponent" to "teams" in 2012, in
-their home stadium (i.e. location = 'A')
+their home stadium (location = 'A')
 - Selects any teams for which the above calculations do not match.
 
 Tip: Remember to account for the possibility of multiple quarterbacks on a team
